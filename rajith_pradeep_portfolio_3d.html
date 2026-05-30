@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rajith Pradeep – Digital Marketing Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Cabinet+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#030308;
+  --bg2:#07070f;
+  --bg3:#0d0d1a;
+  --gold:#f0c060;
+  --gold2:#e8a835;
+  --teal:#00e5cc;
+  --purple:#8b5cf6;
+  --text:#eeeaf4;
+  --muted:#7a7690;
+  --border:rgba(255,255,255,0.06);
+  --serif:'Syne',sans-serif;
+  --sans:'Cabinet Grotesk',sans-serif;
+}
+html{scroll-behavior:smooth;}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:1.6;font-size:15px;overflow-x:hidden;cursor:none;}
+
+/* CUSTOM CURSOR */
+.cursor{position:fixed;width:10px;height:10px;border-radius:50%;background:var(--gold);pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform 0.1s,width 0.2s,height 0.2s,background 0.2s;mix-blend-mode:difference;}
+.cursor-ring{position:fixed;width:36px;height:36px;border-radius:50%;border:1px solid rgba(240,192,96,0.5);pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:transform 0.12s ease,width 0.3s,height 0.3s,opacity 0.3s;}
+body:hover .cursor{opacity:1;}
+
+/* CANVAS */
+#bg-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1.4rem 3.5rem;background:rgba(3,3,8,0.7);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.nav-logo{font-family:var(--serif);font-size:1.05rem;font-weight:800;letter-spacing:0.04em;}
+.nav-logo span{color:var(--gold);}
+.nav-links{display:flex;gap:2.5rem;}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;transition:color 0.2s;position:relative;}
+.nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:var(--gold);transition:width 0.3s;}
+.nav-links a:hover{color:var(--text);}
+.nav-links a:hover::after{width:100%;}
+
+/* WRAPPER */
+.page-wrap{position:relative;z-index:1;}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:9rem 3.5rem 5rem;position:relative;}
+.hero-label{display:inline-flex;align-items:center;gap:10px;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:2rem;}
+.hero-label-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.5;transform:scale(0.7);}}
+.hero h1{font-family:var(--serif);font-size:clamp(3.5rem,8vw,7rem);font-weight:800;line-height:0.95;margin-bottom:2rem;letter-spacing:-0.03em;}
+.hero h1 .line{display:block;overflow:hidden;}
+.hero h1 .line span{display:block;animation:slideUp 0.9s cubic-bezier(0.16,1,0.3,1) both;}
+.hero h1 .line:nth-child(1) span{animation-delay:0.1s;}
+.hero h1 .line:nth-child(2) span{animation-delay:0.2s;}
+.hero h1 .line:nth-child(3) span{animation-delay:0.3s;}
+@keyframes slideUp{from{transform:translateY(110%);}to{transform:translateY(0);}}
+.hero h1 em{font-style:italic;color:var(--gold);}
+.hero-sub{font-size:1rem;color:var(--muted);max-width:480px;line-height:1.8;margin-bottom:3rem;animation:fadeIn 1s ease 0.6s both;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+.hero-cta{display:flex;gap:1.25rem;flex-wrap:wrap;animation:fadeIn 1s ease 0.8s both;}
+.btn-primary{padding:0.9rem 2.2rem;background:var(--gold);color:#030308;border:none;border-radius:0;font-family:var(--sans);font-weight:700;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;cursor:none;text-decoration:none;transition:transform 0.2s,box-shadow 0.2s;display:inline-block;position:relative;overflow:hidden;}
+.btn-primary::before{content:'';position:absolute;inset:0;background:var(--gold2);transform:scaleX(0);transform-origin:right;transition:transform 0.3s;}
+.btn-primary:hover::before{transform:scaleX(1);transform-origin:left;}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(240,192,96,0.3);}
+.btn-primary span{position:relative;z-index:1;}
+.btn-ghost{padding:0.9rem 2.2rem;background:transparent;color:var(--text);border:1px solid rgba(255,255,255,0.15);border-radius:0;font-family:var(--sans);font-weight:500;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;cursor:none;text-decoration:none;transition:border-color 0.2s,transform 0.2s,box-shadow 0.2s;display:inline-block;}
+.btn-ghost:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 12px 40px rgba(240,192,96,0.1);}
+.hero-scroll{position:absolute;bottom:2.5rem;left:3.5rem;display:flex;align-items:center;gap:10px;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);}
+.scroll-line{width:40px;height:1px;background:var(--muted);position:relative;overflow:hidden;}
+.scroll-line::after{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:var(--gold);animation:lineSlide 2s ease-in-out infinite;}
+@keyframes lineSlide{0%{left:-100%;}100%{left:100%;}}
+
+/* STATS */
+.stats-strip{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--bg2);position:relative;z-index:1;}
+.stat-item{padding:3rem 2.5rem;border-right:1px solid var(--border);position:relative;overflow:hidden;cursor:default;transition:background 0.3s;}
+.stat-item::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(240,192,96,0.04),transparent);opacity:0;transition:opacity 0.3s;}
+.stat-item:hover::before{opacity:1;}
+.stat-item:last-child{border-right:none;}
+.stat-num{font-family:var(--serif);font-size:3rem;font-weight:800;color:var(--gold);display:block;line-height:1;margin-bottom:0.5rem;letter-spacing:-0.02em;}
+.stat-label{font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);}
+
+/* SECTION COMMON */
+section{padding:6rem 3.5rem;position:relative;z-index:1;}
+.section-header{margin-bottom:4rem;}
+.section-num{font-size:10px;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;display:flex;align-items:center;gap:12px;}
+.section-num::before{content:'';width:24px;height:1px;background:var(--gold);}
+h2{font-family:var(--serif);font-size:clamp(2.2rem,4vw,3.5rem);font-weight:800;line-height:1.05;letter-spacing:-0.02em;}
+.section-line{width:0;height:1px;background:linear-gradient(90deg,var(--gold),transparent);margin-top:1.5rem;transition:width 1.2s ease;}
+.section-line.visible{width:200px;}
+
+/* 3D CARD EXPERTISE GRID */
+.expertise-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);}
+.expertise-card{background:var(--bg2);padding:2.5rem 2rem;transition:background 0.3s,transform 0.3s;transform-style:preserve-3d;position:relative;overflow:hidden;}
+.expertise-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(240,192,96,0.06),rgba(139,92,246,0.03));opacity:0;transition:opacity 0.4s;}
+.expertise-card:hover::before{opacity:1;}
+.expertise-card:hover{background:var(--bg3);transform:translateY(-4px);}
+.exp-num{font-family:var(--serif);font-size:3.5rem;font-weight:800;color:rgba(240,192,96,0.08);position:absolute;top:1rem;right:1.5rem;line-height:1;}
+.exp-title{font-family:var(--serif);font-size:1.1rem;font-weight:700;margin-bottom:0.75rem;margin-top:0.5rem;}
+.exp-desc{font-size:12.5px;color:var(--muted);line-height:1.75;}
+.exp-tags{margin-top:1.25rem;display:flex;flex-wrap:wrap;gap:6px;}
+.tag{font-size:10px;padding:4px 10px;border:1px solid var(--border);color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;transition:border-color 0.2s,color 0.2s;}
+.tag:hover{border-color:var(--gold);color:var(--gold);}
+
+/* CASE STUDIES */
+.case-study{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--border);margin-bottom:2px;background:var(--bg2);transition:background 0.3s,transform 0.2s;transform-style:preserve-3d;}
+.case-study:hover{background:var(--bg3);transform:translateY(-2px);}
+.case-visual{padding:3rem 2.5rem;display:flex;flex-direction:column;justify-content:space-between;border-right:1px solid var(--border);min-height:300px;position:relative;overflow:hidden;}
+.case-visual::before{content:'';position:absolute;bottom:-80px;right:-80px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(240,192,96,0.06),transparent 70%);pointer-events:none;}
+.case-badge{display:inline-block;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;padding:5px 14px;border:1px solid;margin-bottom:2rem;width:fit-content;}
+.badge-fintech{color:var(--gold);border-color:rgba(240,192,96,0.4);}
+.badge-b2b{color:var(--purple);border-color:rgba(139,92,246,0.4);}
+.badge-seo{color:var(--teal);border-color:rgba(0,229,204,0.4);}
+.case-nums{display:flex;gap:2.5rem;flex-wrap:wrap;}
+.case-num-item .n{font-family:var(--serif);font-size:2.2rem;font-weight:800;display:block;line-height:1;letter-spacing:-0.02em;}
+.case-num-item .l{font-size:10px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-top:4px;}
+.case-content{padding:3rem 2.5rem;display:flex;flex-direction:column;justify-content:center;}
+.case-title{font-family:var(--serif);font-size:1.5rem;font-weight:800;margin-bottom:1rem;letter-spacing:-0.01em;}
+.case-desc{font-size:13px;color:var(--muted);line-height:1.8;margin-bottom:1.5rem;}
+.case-bullets{list-style:none;display:flex;flex-direction:column;gap:8px;}
+.case-bullets li{font-size:12.5px;color:var(--muted);padding-left:1.25rem;position:relative;line-height:1.6;}
+.case-bullets li::before{content:'';position:absolute;left:0;top:0.55em;width:5px;height:5px;border-radius:50%;background:var(--gold);opacity:0.6;}
+
+/* SKILLS */
+.skills-layout{display:grid;grid-template-columns:1fr 2fr;gap:4rem;align-items:start;}
+.skill-category{margin-bottom:2.5rem;}
+.skill-cat-name{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;display:flex;align-items:center;gap:8px;}
+.skill-cat-name::before{content:'';width:16px;height:1px;background:var(--gold);}
+.skill-bar-row{display:flex;align-items:center;gap:14px;margin-bottom:12px;}
+.skill-name{font-size:13px;min-width:150px;color:var(--muted);}
+.skill-track{flex:1;height:1px;background:var(--border);position:relative;overflow:visible;}
+.skill-fill{height:1px;background:linear-gradient(90deg,var(--gold),var(--gold2));position:relative;transition:width 1.5s cubic-bezier(0.16,1,0.3,1);}
+.skill-fill::after{content:'';position:absolute;right:-4px;top:-3px;width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px var(--gold);}
+.skill-fill.purple{background:linear-gradient(90deg,var(--purple),#6d28d9);}
+.skill-fill.purple::after{background:var(--purple);box-shadow:0 0 8px var(--purple);}
+.skill-fill.teal{background:linear-gradient(90deg,var(--teal),#00b8a9);}
+.skill-fill.teal::after{background:var(--teal);box-shadow:0 0 8px var(--teal);}
+.tools-grid{display:flex;flex-wrap:wrap;gap:8px;}
+.tool-chip{font-size:11px;padding:7px 16px;border:1px solid var(--border);color:var(--muted);letter-spacing:0.05em;transition:border-color 0.2s,color 0.2s,transform 0.2s,box-shadow 0.2s;cursor:default;}
+.tool-chip:hover{border-color:var(--gold);color:var(--text);transform:translateY(-2px);box-shadow:0 4px 20px rgba(240,192,96,0.15);}
+
+/* TIMELINE */
+.timeline{position:relative;padding-left:2.5rem;}
+.timeline::before{content:'';position:absolute;left:0;top:10px;bottom:10px;width:1px;background:linear-gradient(180deg,var(--gold),rgba(240,192,96,0.1));}
+.tl-item{position:relative;margin-bottom:3.5rem;}
+.tl-dot{position:absolute;left:-2.5rem;top:8px;width:9px;height:9px;border-radius:50%;background:var(--gold);transform:translateX(-4px);box-shadow:0 0 12px rgba(240,192,96,0.5);}
+.tl-period{font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem;display:flex;align-items:center;gap:8px;}
+.tl-role{font-family:var(--serif);font-size:1.4rem;font-weight:700;margin-bottom:0.3rem;}
+.tl-company{font-size:13px;color:var(--muted);margin-bottom:1rem;}
+.tl-bullets{list-style:none;display:flex;flex-direction:column;gap:6px;}
+.tl-bullets li{font-size:13px;color:var(--muted);padding-left:1.25rem;position:relative;line-height:1.65;}
+.tl-bullets li::before{content:'';position:absolute;left:0;top:0.6em;width:4px;height:4px;border-radius:50%;background:rgba(240,192,96,0.5);}
+
+/* CONTACT */
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;}
+.contact-note{font-family:var(--serif);font-size:1.8rem;font-weight:700;line-height:1.3;letter-spacing:-0.01em;}
+.contact-note span{color:var(--gold);}
+.contact-info{display:flex;flex-direction:column;gap:1.5rem;}
+.contact-item{display:flex;align-items:center;gap:1.25rem;padding:1.25rem;border:1px solid var(--border);transition:border-color 0.3s,transform 0.2s,box-shadow 0.2s;}
+.contact-item:hover{border-color:rgba(240,192,96,0.3);transform:translateX(4px);box-shadow:-4px 0 20px rgba(240,192,96,0.06);}
+.contact-icon{width:38px;height:38px;border:1px solid rgba(240,192,96,0.3);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;background:rgba(240,192,96,0.05);}
+.contact-label{font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted);}
+.contact-value{font-size:14px;margin-top:2px;}
+
+/* FOOTER */
+footer{padding:2rem 3.5rem;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--bg);position:relative;z-index:1;}
+.footer-left{font-family:var(--serif);font-size:1rem;font-weight:800;}
+.footer-left span{color:var(--gold);}
+.footer-right{font-size:11px;color:var(--muted);letter-spacing:0.08em;}
+
+/* FLOATING PARTICLES */
+.particles{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;}
+
+/* SCROLL REVEAL */
+.reveal{opacity:0;transform:translateY(40px);transition:opacity 0.8s cubic-bezier(0.16,1,0.3,1),transform 0.8s cubic-bezier(0.16,1,0.3,1);}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+/* 3D TILT CONTAINER */
+.tilt{transform-style:preserve-3d;transition:transform 0.15s ease;}
+
+/* GLOW TEXT */
+.glow{text-shadow:0 0 40px rgba(240,192,96,0.3);}
+
+/* NOISE OVERLAY */
+.noise{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:2;opacity:0.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+
+@media(max-width:768px){
+  nav{padding:1rem 1.5rem;} .nav-links{display:none;}
+  .hero{padding:7rem 1.5rem 4rem;}
+  .stats-strip{grid-template-columns:1fr 1fr;}
+  section{padding:4rem 1.5rem;}
+  .expertise-grid{grid-template-columns:1fr;}
+  .case-study{grid-template-columns:1fr;}
+  .case-visual{border-right:none;border-bottom:1px solid var(--border);min-height:auto;}
+  .skills-layout{grid-template-columns:1fr;}
+  .contact-grid{grid-template-columns:1fr;}
+  footer{flex-direction:column;gap:0.5rem;text-align:center;padding:1.5rem;}
+}
+</style>
+</head>
+<body>
+
+<div class="noise"></div>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<canvas id="bg-canvas"></canvas>
+
+<div class="page-wrap">
+
+<nav>
+  <div class="nav-logo">Rajith <span>Pradeep</span></div>
+  <div class="nav-links">
+    <a href="#expertise">Expertise</a>
+    <a href="#work">Work</a>
+    <a href="#skills">Skills</a>
+    <a href="#experience">Experience</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="hero-label"><div class="hero-label-dot"></div>Digital Marketing Executive &nbsp;·&nbsp; Dubai, UAE</div>
+  <h1 class="glow">
+    <div class="line"><span>Performance.</span></div>
+    <div class="line"><span><em>Precision.</em></span></div>
+    <div class="line"><span>Results.</span></div>
+  </h1>
+  <p class="hero-sub">4+ years driving measurable growth for fintech and B2B SaaS brands across India and the UAE. From Meta Ads to technical SEO, full-funnel, data-driven, delivery-focused.</p>
+  <div class="hero-cta">
+    <a href="#work" class="btn-primary"><span>View Case Studies</span></a>
+    <a href="#contact" class="btn-ghost">Get in Touch</a>
+  </div>
+  <div class="hero-scroll"><div class="scroll-line"></div>Scroll</div>
+</section>
+
+<!-- STATS STRIP -->
+<div class="stats-strip">
+  <div class="stat-item reveal">
+    <span class="stat-num" data-target="55">0</span><span class="stat-num">M+</span>
+    <span class="stat-label">Audience Reach</span>
+  </div>
+  <div class="stat-item reveal">
+    <span class="stat-num" data-target="107">0</span><span class="stat-num">M+</span>
+    <span class="stat-label">Impressions Delivered</span>
+  </div>
+  <div class="stat-item reveal">
+    <span class="stat-num" data-target="200">0</span><span class="stat-num">K+</span>
+    <span class="stat-label">Link Clicks Generated</span>
+  </div>
+  <div class="stat-item reveal">
+    <span class="stat-num" data-target="4">0</span><span class="stat-num">+</span>
+    <span class="stat-label">Years Experience</span>
+  </div>
+</div>
+
+<!-- EXPERTISE -->
+<section id="expertise" style="background:var(--bg);">
+  <div class="section-header reveal">
+    <div class="section-num">01 Expertise</div>
+    <h2>What I Do</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="expertise-grid">
+    <div class="expertise-card tilt reveal">
+      <div class="exp-num">01</div>
+      <div class="exp-title">Performance Marketing</div>
+      <p class="exp-desc">End-to-end Meta Ads campaign management across brand awareness, traffic, lead gen, and engagement objectives. Audience targeting, creative testing, and conversion optimisation.</p>
+      <div class="exp-tags"><span class="tag">Meta Ads</span><span class="tag">Google Ads</span><span class="tag">CTR/CPC</span><span class="tag">Lead Gen</span></div>
+    </div>
+    <div class="expertise-card tilt reveal">
+      <div class="exp-num">02</div>
+      <div class="exp-title">Search Engine Optimisation</div>
+      <p class="exp-desc">Full-funnel SEO strategy covering on-page, off-page, technical, and local. Keyword research, link-building, site audits, and structured content to grow organic visibility.</p>
+      <div class="exp-tags"><span class="tag">Ahrefs</span><span class="tag">SEMrush</span><span class="tag">Technical SEO</span><span class="tag">Link Building</span></div>
+    </div>
+    <div class="expertise-card tilt reveal">
+      <div class="exp-num">03</div>
+      <div class="exp-title">B2B and LinkedIn Marketing</div>
+      <p class="exp-desc">LinkedIn outreach using Sales Navigator to build fintech and banking decision-maker pipelines. Thought leadership content and founder branding for executive profiles.</p>
+      <div class="exp-tags"><span class="tag">Sales Navigator</span><span class="tag">Pipelines</span><span class="tag">Founder Branding</span></div>
+    </div>
+    <div class="expertise-card tilt reveal">
+      <div class="exp-num">04</div>
+      <div class="exp-title">Brand and Content Strategy</div>
+      <p class="exp-desc">Brand positioning, product messaging, and campaign communication for fintech clients. AI-assisted content workflows, CGI concepts, and celebrity ambassador campaigns.</p>
+      <div class="exp-tags"><span class="tag">Brand Positioning</span><span class="tag">AI Content</span><span class="tag">CGI Concepts</span></div>
+    </div>
+    <div class="expertise-card tilt reveal">
+      <div class="exp-num">05</div>
+      <div class="exp-title">Email and Marketing Automation</div>
+      <p class="exp-desc">Lead nurturing and CRM campaigns via MailChimp. B2B webinar production end-to-end covering promotion, live execution, post-event follow-up, and YouTube content optimisation.</p>
+      <div class="exp-tags"><span class="tag">MailChimp</span><span class="tag">Webinars</span><span class="tag">Lead Nurturing</span></div>
+    </div>
+    <div class="expertise-card tilt reveal">
+      <div class="exp-num">06</div>
+      <div class="exp-title">Analytics and Reporting</div>
+      <p class="exp-desc">Campaign performance insights using Google Analytics, GSC, and Meta Ads reporting. Data-driven decisions on targeting, creative performance, and budget allocation.</p>
+      <div class="exp-tags"><span class="tag">GA4</span><span class="tag">Search Console</span><span class="tag">SimilarWeb</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- CASE STUDIES -->
+<section id="work" style="background:var(--bg2);">
+  <div class="section-header reveal">
+    <div class="section-num">02 Selected Work</div>
+    <h2>Case Studies</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="case-study tilt reveal">
+    <div class="case-visual">
+      <span class="case-badge badge-fintech">Fintech &nbsp;·&nbsp; Brand Awareness</span>
+      <div class="case-nums">
+        <div class="case-num-item"><span class="n">55M+</span><span class="l">Reach</span></div>
+        <div class="case-num-item"><span class="n">107M+</span><span class="l">Impressions</span></div>
+        <div class="case-num-item"><span class="n">50K+</span><span class="l">Page Likes</span></div>
+      </div>
+    </div>
+    <div class="case-content">
+      <div class="case-title">Zrika — Fintech Brand Scale-Up</div>
+      <p class="case-desc">Large-scale Meta Ads campaign management for a UAE-based fintech brand. Built and executed a multi-objective campaign strategy spanning brand awareness, traffic, engagement, and lead generation.</p>
+      <ul class="case-bullets">
+        <li>Managed multi-objective Meta Ads across awareness, traffic and lead gen</li>
+        <li>Directed celebrity brand ambassador campaigns and CGI concepts</li>
+        <li>Built LinkedIn thought leadership for executive profiles</li>
+        <li>Executed digital marketing for major fintech industry expos</li>
+      </ul>
+    </div>
+  </div>
+  <div class="case-study tilt reveal">
+    <div class="case-visual">
+      <span class="case-badge badge-b2b">B2B SaaS &nbsp;·&nbsp; Lead Generation</span>
+      <div class="case-nums">
+        <div class="case-num-item"><span class="n" style="font-size:1.4rem;">B2B</span><span class="l">Pipeline Built</span></div>
+        <div class="case-num-item"><span class="n" style="font-size:1.4rem;">Webinars</span><span class="l">Lead Uplift</span></div>
+      </div>
+    </div>
+    <div class="case-content">
+      <div class="case-title">CloudBankin — B2B Fintech SaaS</div>
+      <p class="case-desc">In-house digital marketing for a banking and lending technology SaaS. Built decision-maker pipelines on LinkedIn, managed full-funnel SEO, and scaled B2B visibility through webinars and email campaigns.</p>
+      <ul class="case-bullets">
+        <li>LinkedIn Sales Navigator outreach to banking and fintech decision-makers</li>
+        <li>Full-funnel SEO on WordPress covering on-page, technical, local and off-page</li>
+        <li>Planned and hosted B2B webinars with significant lead generation uplift</li>
+        <li>Email marketing via MailChimp for lead nurturing and client management</li>
+      </ul>
+    </div>
+  </div>
+  <div class="case-study tilt reveal">
+    <div class="case-visual">
+      <span class="case-badge badge-seo">SEO &nbsp;·&nbsp; Link Building</span>
+      <div class="case-nums">
+        <div class="case-num-item"><span class="n" style="font-size:1.6rem;">US/UK</span><span class="l">Markets</span></div>
+        <div class="case-num-item"><span class="n" style="font-size:1.2rem;">High DA/PA</span><span class="l">Guest Posts</span></div>
+      </div>
+    </div>
+    <div class="case-content">
+      <div class="case-title">Joy Technologies — International SEO</div>
+      <p class="case-desc">Off-page and technical SEO campaigns for US and UK clients. Managed guest posting and blogger outreach using Pitchbox, delivering SEO-optimised content and backlink acquisition.</p>
+      <ul class="case-bullets">
+        <li>Outreach via Pitchbox for high-authority backlink acquisition</li>
+        <li>Comprehensive SEO audits covering on-page, off-page, technical and local</li>
+        <li>Keyword research for backlink prospecting campaigns</li>
+        <li>SEO-optimised content delivery with contextual backlinks</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills" style="background:var(--bg);">
+  <div class="section-header reveal">
+    <div class="section-num">03 Skills</div>
+    <h2>Core Capabilities</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="skills-layout">
+    <div>
+      <div class="skill-category reveal">
+        <div class="skill-cat-name">Performance</div>
+        <div class="skill-bar-row"><span class="skill-name">Meta Ads Manager</span><div class="skill-track"><div class="skill-fill" style="width:0%" data-w="92%"></div></div></div>
+        <div class="skill-bar-row"><span class="skill-name">Google Ads</span><div class="skill-track"><div class="skill-fill" style="width:0%" data-w="75%"></div></div></div>
+        <div class="skill-bar-row"><span class="skill-name">Lead Generation</span><div class="skill-track"><div class="skill-fill" style="width:0%" data-w="88%"></div></div></div>
+      </div>
+      <div class="skill-category reveal">
+        <div class="skill-cat-name">SEO</div>
+        <div class="skill-bar-row"><span class="skill-name">On-Page SEO</span><div class="skill-track"><div class="skill-fill purple" style="width:0%" data-w="90%"></div></div></div>
+        <div class="skill-bar-row"><span class="skill-name">Technical SEO</span><div class="skill-track"><div class="skill-fill purple" style="width:0%" data-w="82%"></div></div></div>
+        <div class="skill-bar-row"><span class="skill-name">Link Building</span><div class="skill-track"><div class="skill-fill purple" style="width:0%" data-w="85%"></div></div></div>
+      </div>
+      <div class="skill-category reveal">
+        <div class="skill-cat-name">Content and Creative</div>
+        <div class="skill-bar-row"><span class="skill-name">AI Content</span><div class="skill-track"><div class="skill-fill teal" style="width:0%" data-w="88%"></div></div></div>
+        <div class="skill-bar-row"><span class="skill-name">Copywriting</span><div class="skill-track"><div class="skill-fill teal" style="width:0%" data-w="80%"></div></div></div>
+        <div class="skill-bar-row"><span class="skill-name">Brand Strategy</span><div class="skill-track"><div class="skill-fill teal" style="width:0%" data-w="83%"></div></div></div>
+      </div>
+    </div>
+    <div class="reveal">
+      <p style="font-size:10px;color:var(--muted);margin-bottom:1.5rem;letter-spacing:0.15em;text-transform:uppercase;">Tools and Platforms</p>
+      <div class="tools-grid">
+        <span class="tool-chip">Ahrefs</span><span class="tool-chip">SEMrush</span><span class="tool-chip">Google Analytics</span>
+        <span class="tool-chip">Search Console</span><span class="tool-chip">Google Ads</span><span class="tool-chip">Meta Ads Manager</span>
+        <span class="tool-chip">Sales Navigator</span><span class="tool-chip">MailChimp</span><span class="tool-chip">Pitchbox</span>
+        <span class="tool-chip">Canva</span><span class="tool-chip">Screaming Frog</span><span class="tool-chip">SimilarWeb</span>
+        <span class="tool-chip">UberSuggest</span><span class="tool-chip">Keyword Planner</span><span class="tool-chip">Snov.io</span>
+        <span class="tool-chip">Hunter.io</span><span class="tool-chip">RapBooster</span><span class="tool-chip">Gallabox</span>
+        <span class="tool-chip">Grammarly</span><span class="tool-chip">QuillBot</span><span class="tool-chip">Zoom Webinar</span>
+        <span class="tool-chip">Digital Inspiration</span>
+      </div>
+      <div style="margin-top:2rem;padding:1.75rem;border:1px solid var(--border);position:relative;overflow:hidden;">
+        <div style="position:absolute;top:0;left:0;width:3px;height:100%;background:linear-gradient(180deg,var(--gold),transparent);"></div>
+        <p style="font-size:10px;text-transform:uppercase;letter-spacing:0.15em;color:var(--gold);margin-bottom:0.75rem;">Industry Expertise</p>
+        <p style="font-size:13px;color:var(--muted);line-height:1.8;">Fintech &nbsp;·&nbsp; Banking Technology &nbsp;·&nbsp; B2B SaaS &nbsp;·&nbsp; Merchant Acquiring &nbsp;·&nbsp; Fraud Prevention &nbsp;·&nbsp; AI Banking Solutions &nbsp;·&nbsp; UPI Ecosystem &nbsp;·&nbsp; Digital Banking Infrastructure</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience" style="background:var(--bg2);">
+  <div class="section-header reveal">
+    <div class="section-num">04 Experience</div>
+    <h2>Career Timeline</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="timeline">
+    <div class="tl-item reveal">
+      <div class="tl-dot"></div>
+      <div class="tl-period">Apr 2024 Present</div>
+      <div class="tl-role">Digital Marketing Executive</div>
+      <div class="tl-company">Ultrapixel Information Technology &nbsp;·&nbsp; Dubai, UAE</div>
+      <ul class="tl-bullets">
+        <li>Delivered 55M+ reach and 107M+ impressions via Meta Ads for fintech clients</li>
+        <li>Brand positioning and product messaging for AI banking, fraud prevention, and merchant acquiring brands</li>
+        <li>Led social media strategy across LinkedIn, Instagram, and Meta for multiple client brands simultaneously</li>
+        <li>Directed celebrity ambassador campaigns, CGI concepts, and AI-assisted content production</li>
+        <li>Technical SEO covering XML sitemaps, robots.txt, site speed, and audits using Screaming Frog, Ahrefs, SEMrush</li>
+        <li>Off-page SEO with link-building via social bookmarking, profile creation, business listings, and paid guest posts</li>
+      </ul>
+    </div>
+    <div class="tl-item reveal">
+      <div class="tl-dot"></div>
+      <div class="tl-period">Dec 2022 Mar 2024</div>
+      <div class="tl-role">Digital Marketing Executive</div>
+      <div class="tl-company">CloudBankin &nbsp;·&nbsp; Chennai, India</div>
+      <ul class="tl-bullets">
+        <li>LinkedIn Sales Navigator outreach to banking and fintech decision-makers for B2B pipeline building</li>
+        <li>Full-funnel SEO on WordPress covering on-page, off-page, technical, and local SEO</li>
+        <li>Email marketing via MailChimp for lead nurturing and client relationship management</li>
+        <li>Planned, hosted, and promoted B2B Zoom webinars with significant lead generation uplift</li>
+        <li>Managed YouTube content including webinar recordings, client testimonials, and optimised metadata</li>
+      </ul>
+    </div>
+    <div class="tl-item reveal">
+      <div class="tl-dot"></div>
+      <div class="tl-period">Oct 2022 Dec 2022</div>
+      <div class="tl-role">Digital Marketing Intern</div>
+      <div class="tl-company">Joy Technologies &nbsp;·&nbsp; Chennai, India</div>
+      <ul class="tl-bullets">
+        <li>Link-building campaigns for US and UK clients via guest posting and Pitchbox outreach</li>
+        <li>SEO audits covering on-page, off-page, technical, and local, with SEO-optimised content delivery</li>
+        <li>Keyword research for backlink acquisition and prospecting campaigns</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" style="background:var(--bg);">
+  <div class="section-header reveal">
+    <div class="section-num">05 Contact</div>
+    <h2>Let's Work Together</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="contact-grid">
+    <div class="reveal">
+      <p class="contact-note">Open to roles in <span>performance marketing</span>, brand strategy, and growth for fintech brands in the UAE.</p>
+    </div>
+    <div class="contact-info reveal">
+      <div class="contact-item">
+        <div class="contact-icon">✉</div>
+        <div>
+          <div class="contact-label">Email</div>
+          <div class="contact-value">rajithpradeep@gmail.com</div>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">📞</div>
+        <div>
+          <div class="contact-label">Phone</div>
+          <div class="contact-value">+971 5030 75766</div>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">📍</div>
+        <div>
+          <div class="contact-label">Location</div>
+          <div class="contact-value">Dubai, UAE &nbsp;·&nbsp; Employment Visa valid till Dec 2026</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-left">Rajith <span>Pradeep</span></div>
+  <div class="footer-right">Digital Marketing Executive &nbsp;·&nbsp; PPC &amp; SEO Specialist</div>
+</footer>
+
+</div><!-- end page-wrap -->
+
+<script>
+// CURSOR
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX; my=e.clientY;
+  cursor.style.left=mx+'px'; cursor.style.top=my+'px';
+});
+function animRing(){
+  rx+=(mx-rx)*0.12; ry+=(my-ry)*0.12;
+  ring.style.left=rx+'px'; ring.style.top=ry+'px';
+  requestAnimationFrame(animRing);
+}
+animRing();
+document.querySelectorAll('a,button,.expertise-card,.case-study,.tool-chip').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{
+    cursor.style.width='16px'; cursor.style.height='16px';
+    ring.style.width='54px'; ring.style.height='54px'; ring.style.opacity='0.6';
+  });
+  el.addEventListener('mouseleave',()=>{
+    cursor.style.width='10px'; cursor.style.height='10px';
+    ring.style.width='36px'; ring.style.height='36px'; ring.style.opacity='1';
+  });
+});
+
+// THREE.JS BACKGROUND
+const canvas=document.getElementById('bg-canvas');
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+renderer.setSize(window.innerWidth,window.innerHeight);
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(60,window.innerWidth/window.innerHeight,0.1,1000);
+camera.position.z=30;
+
+// Floating geometric shapes
+const shapes=[];
+const geos=[
+  new THREE.OctahedronGeometry(1.2,0),
+  new THREE.TetrahedronGeometry(1.4,0),
+  new THREE.IcosahedronGeometry(1,0),
+  new THREE.BoxGeometry(1.5,1.5,1.5),
+  new THREE.OctahedronGeometry(0.8,0),
+];
+const mat1=new THREE.MeshPhongMaterial({color:0xf0c060,wireframe:true,transparent:true,opacity:0.15});
+const mat2=new THREE.MeshPhongMaterial({color:0x8b5cf6,wireframe:true,transparent:true,opacity:0.12});
+const mat3=new THREE.MeshPhongMaterial({color:0x00e5cc,wireframe:true,transparent:true,opacity:0.1});
+const mats=[mat1,mat2,mat3];
+for(let i=0;i<18;i++){
+  const geo=geos[Math.floor(Math.random()*geos.length)];
+  const mat=mats[Math.floor(Math.random()*mats.length)].clone();
+  const mesh=new THREE.Mesh(geo,mat);
+  mesh.position.set((Math.random()-0.5)*60,(Math.random()-0.5)*60,(Math.random()-0.5)*20);
+  mesh.rotation.set(Math.random()*Math.PI,Math.random()*Math.PI,Math.random()*Math.PI);
+  const s=0.6+Math.random()*1.8;
+  mesh.scale.setScalar(s);
+  mesh.userData={
+    rx:(Math.random()-0.5)*0.006,
+    ry:(Math.random()-0.5)*0.006,
+    rz:(Math.random()-0.5)*0.004,
+    fy:((Math.random()-0.5)*0.003),
+    origY:mesh.position.y,
+    t:Math.random()*Math.PI*2
+  };
+  scene.add(mesh);
+  shapes.push(mesh);
+}
+
+// Particle system
+const pGeo=new THREE.BufferGeometry();
+const pCount=200;
+const pPos=new Float32Array(pCount*3);
+for(let i=0;i<pCount;i++){
+  pPos[i*3]=(Math.random()-0.5)*80;
+  pPos[i*3+1]=(Math.random()-0.5)*80;
+  pPos[i*3+2]=(Math.random()-0.5)*30;
+}
+pGeo.setAttribute('position',new THREE.BufferAttribute(pPos,3));
+const pMat=new THREE.PointsMaterial({color:0xf0c060,size:0.08,transparent:true,opacity:0.4});
+const points=new THREE.Points(pGeo,pMat);
+scene.add(points);
+
+// Light
+const ambLight=new THREE.AmbientLight(0xffffff,0.3);
+scene.add(ambLight);
+const ptLight=new THREE.PointLight(0xf0c060,1.5,80);
+ptLight.position.set(10,10,10);
+scene.add(ptLight);
+const ptLight2=new THREE.PointLight(0x8b5cf6,1,60);
+ptLight2.position.set(-15,-10,5);
+scene.add(ptLight2);
+
+let mouseX=0,mouseY=0;
+document.addEventListener('mousemove',e=>{
+  mouseX=(e.clientX/window.innerWidth-0.5)*2;
+  mouseY=-(e.clientY/window.innerHeight-0.5)*2;
+});
+
+let t=0;
+function animate(){
+  requestAnimationFrame(animate);
+  t+=0.008;
+  shapes.forEach(m=>{
+    m.rotation.x+=m.userData.rx;
+    m.rotation.y+=m.userData.ry;
+    m.rotation.z+=m.userData.rz;
+    m.position.y=m.userData.origY+Math.sin(t+m.userData.t)*1.5;
+  });
+  points.rotation.y+=0.0005;
+  points.rotation.x+=0.0002;
+  camera.position.x+=(mouseX*3-camera.position.x)*0.02;
+  camera.position.y+=(mouseY*2-camera.position.y)*0.02;
+  camera.lookAt(scene.position);
+  renderer.render(scene,camera);
+}
+animate();
+
+window.addEventListener('resize',()=>{
+  camera.aspect=window.innerWidth/window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth,window.innerHeight);
+});
+
+// SCROLL REVEAL
+const revEls=document.querySelectorAll('.reveal');
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach((e,i)=>{
+    if(e.isIntersecting){
+      setTimeout(()=>{e.target.classList.add('visible');},i*60);
+      // Animate skill bars
+      e.target.querySelectorAll('.skill-fill[data-w]').forEach(bar=>{
+        setTimeout(()=>{bar.style.width=bar.dataset.w;},300);
+      });
+      // Animate section lines
+      e.target.querySelectorAll('.section-line').forEach(l=>{
+        setTimeout(()=>{l.classList.add('visible');},400);
+      });
+    }
+  });
+},{threshold:0.1});
+revEls.forEach(el=>obs.observe(el));
+
+// Also observe section headers directly
+document.querySelectorAll('.section-header').forEach(el=>{
+  el.querySelectorAll('.section-line').forEach(l=>{
+    const lineObs=new IntersectionObserver(entries=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting) setTimeout(()=>l.classList.add('visible'),400);
+      });
+    },{threshold:0.5});
+    lineObs.observe(el);
+  });
+});
+
+// 3D CARD TILT
+document.querySelectorAll('.tilt').forEach(card=>{
+  card.addEventListener('mousemove',e=>{
+    const r=card.getBoundingClientRect();
+    const x=(e.clientX-r.left)/r.width-0.5;
+    const y=(e.clientY-r.top)/r.height-0.5;
+    card.style.transform=`perspective(800px) rotateY(${x*8}deg) rotateX(${-y*6}deg) translateY(-4px)`;
+  });
+  card.addEventListener('mouseleave',()=>{
+    card.style.transform='perspective(800px) rotateY(0deg) rotateX(0deg) translateY(0)';
+  });
+});
+</script>
+</body>
+</html>
